@@ -1,0 +1,87 @@
+﻿@model List<TourApplication.Models.TourModel>
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<style>
+    .jumbotron {
+        background-image: url("@Url.Content("~/content/images/climber2.jpg")");
+        background-size: cover;
+        height: 450px;
+        color: #ffffff;
+        padding: 100px 25px;
+        margin:0px;
+    }
+
+
+    .bg-grey {
+        background-color: #f6f6f6;
+    }
+
+    .container-fluid {
+        padding: 60px 50px;
+    }
+</style>
+
+<div id="login" class="jumbotron text-center">
+    <h1>@ViewBag.name</h1>
+    <p>@ViewBag.description</p>
+</div>
+
+<div id="menu" class="text-center">
+  
+    <div class="navbar-collapse collapse" id="myNavbar">
+        
+            <ul class="nav navbar-nav navbar-">
+
+                <li><a href="#info"><h2><span class="glyphicon glyphicon-picture"></span><br /> INFORMATION </h2></a></li>
+                <li><a href="#activity"><h2><span class="glyphicon glyphicon-picture"></span><br /> ACTIVITY </h2></a></li>
+                <li><a href="#photos"><h2><span class="glyphicon glyphicon-picture"></span><br /> PHOTOS </h2></a></li>
+                <li><a href="#weather"><h2><span class="glyphicon glyphicon-picture"></span><br /> WEATHER </h2></a></li>
+            </ul>
+      
+    </div>
+        <p>@ViewBag.description</p>
+</div>
+
+
+
+
+<div class="container-fluid ">
+    <div id ="info" class="list-group">
+
+        @foreach (TourApplication.Models.TourModel t in Model)
+            {
+          
+            <a href="#" id="tour" class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    
+                    <h4 class="mb-1">@t.name</h4>
+                    <small class="text-muted">@t.type</small>
+                </div>
+                <p class="mb-1">@t.comments</p>
+                <small class="text-muted">@t.position.x och @t.position.y % elevation: @t.elevation möh. </small>
+
+
+                @if (t.sunrise == t.sunset)
+                {
+                    <small class="text-muted"> Det är mörkertid, solen går inte upp idag!</small>
+
+                }
+                else
+                {
+                    <small class="text-muted">  Soluppgång: @t.sunrise -- Solnedgång: @t.sunset -- Dagslängd: @t.day_length</small>
+                }
+
+
+
+            </a>
+
+        }
+    </div>
+</div>
+<div id="weather" class="container-fluid bg-grey">
+
+    <h2 class="text-center">WEATHER & MORE</h2>
+</div>
