@@ -33,12 +33,16 @@
     </form>
 </div>
 
+
+
+
 <div id="tours" class="container-fluid">
     <div class="list-group">
 
         @foreach (TourApplication.Models.TourModel t in Model)
-            {
-            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+        {
+
+            <a href="@Url.Action("Details", "Tour", new RouteValueDictionary(new { id = t.name }))" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
                     <h4 class="mb-1">@t.name</h4>
                     <small class="text-muted">@t.type</small>
@@ -84,7 +88,7 @@
             @:var marker = new google.maps.Marker({ map: map, position: position, clickable: true });
             @:marker.info = new google.maps.InfoWindow({content: '@t.name'});
             @:google.maps.event.addListener(marker, 'click', function () {marker.info.open(map, this);});
-      
+
                      }
          }
         //https://stackoverflow.com/questions/3158598/google-maps-api-v3-adding-an-infowindow-to-each-marker för att fixa problemet med inforutan

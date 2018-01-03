@@ -22,6 +22,11 @@ namespace TourApplication.Models
             public DateTime sunrise { get; set; }
             public DateTime sunset { get; set; }
             public string day_length { get; set; }
+            public string county { get; set; }
+            public string country { get; set; }
+        
+
+
 
 
         public Position position { get; set; }

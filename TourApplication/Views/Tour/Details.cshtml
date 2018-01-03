@@ -6,7 +6,8 @@
 
 <style>
     .jumbotron {
-        background-image: url("@Url.Content("~/content/images/climber2.jpg")");
+
+        background-image: url("@Url.Content("~/content/images/"+@ViewBag.BG)");
         background-size: cover;
         height: 450px;
         color: #ffffff;
@@ -24,64 +25,143 @@
     }
 </style>
 
+
+
 <div id="login" class="jumbotron text-center">
     <h1>@ViewBag.name</h1>
-    <p>@ViewBag.description</p>
+    <h3>@ViewBag.county, @ViewBag.country </h3>
+    <p>@ViewBag.type</p>
 </div>
 
-<div id="menu" class="text-center">
-  
-    <div class="navbar-collapse collapse" id="myNavbar">
-        
-            <ul class="nav navbar-nav navbar-">
 
-                <li><a href="#info"><h2><span class="glyphicon glyphicon-picture"></span><br /> INFORMATION </h2></a></li>
-                <li><a href="#activity"><h2><span class="glyphicon glyphicon-picture"></span><br /> ACTIVITY </h2></a></li>
-                <li><a href="#photos"><h2><span class="glyphicon glyphicon-picture"></span><br /> PHOTOS </h2></a></li>
-                <li><a href="#weather"><h2><span class="glyphicon glyphicon-picture"></span><br /> WEATHER </h2></a></li>
-            </ul>
+<div>
+    <nav class="navbar navbar navbar">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+
+            </div>
+
+
+            <div class="navbar-collapse collapse text-center" id="myNavbar">
+                <ul class="nav navbar-nav">
+
+                    <li><a href="#information"><h2><span class="glyphicon glyphicon-plus"></span><br /> INFORMATION </h2></a></li>
+                    <li><a href="#activity"><h2><span class="glyphicon glyphicon-heart"></span><br /> ACTIVITY </h2></a></li>
+                    <li><a href="#weather"><h2><span class="glyphicon glyphicon-cloud"></span><br /> WEATHER </h2></a></li>
+                    <li><a href="#photos"><h2><span class="glyphicon glyphicon-picture"></span><br /> PHOTOS </h2></a></li>
+
+                </ul>
+            </div>
+        </div>
+
+    </nav>
+</div>
+<center>
+    <div id="googleMap" style="height:400px;width:100%;"></div>
+    <script>
+        function myMap() {
+            var myCenter = new google.maps.LatLng(64.689767, 14.924996);
+            var mapProp = { center: myCenter, zoom: 7, scrollwheel: false, draggable: true, mapTypeId: 'satellite' };
+            var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+
+            @foreach (TourApplication.Models.TourModel t in Model) {
+            @:var position = new google.maps.LatLng(@t.position.x.ToString().Replace(",", "."), @t.position.y.ToString().Replace(",", "."));
+
+
+
+            @:var marker = new google.maps.Marker({ map: map, position: position, clickable: true });
+            @:marker.info = new google.maps.InfoWindow({content: '@t.name'});
+            @:google.maps.event.addListener(marker, 'click', function () {marker.info.open(map, this);});
+
+                     }
+         }
+        //https://stackoverflow.com/questions/3158598/google-maps-api-v3-adding-an-infowindow-to-each-marker för att fixa problemet med inforutan
+    </script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDyecsSf2YPWYz-RUw5UGvN_OPEs5J8DpY&callback=myMap"></script>
+</center>
+
+@foreach(TourApplication.Models.TourModel t in Model) { 
+<center>
+    <div id="information" class="container-fluid bg-grey">
+
+
+        <h3>Description</h3>
+        <div class="alert alert-info">@t.comments</div>
+
+
       
-    </div>
-        <p>@ViewBag.description</p>
-</div>
+        <br>
+        <div class="row">
+
+         
+            <div class="col-sm-3">
+                <span class="glyphicon glyphicon-off"></span>
+                <h4>Type</h4>
+                <p>@t.type</p>
+            </div>
 
 
+            <div class="col-sm-3">
+                <span class="glyphicon glyphicon-heart"></span>
+                <h4>Difficulty (1-10)</h4>
+                <p>@t.grade</p>
+            </div>
 
+      
+            <div class="col-sm-3">
+                <span class="glyphicon glyphicon-map-marker"></span>
+                <h4>Position lng/lat</h4>
+                <p>@t.position.x & @t.position.y</p>
+            </div>
+        </div>
+        <br><br>
 
-<div class="container-fluid ">
-    <div id ="info" class="list-group">
+        <div class="row">
+            <div class="col-sm-3">
+                <span class="glyphicon glyphicon-off"></span>
+                <h4>Elevation</h4>
+                <p><b>@t.elevation</b> m</p>
+            </div>
 
-        @foreach (TourApplication.Models.TourModel t in Model)
-            {
+            <div class="col-sm-3">
+                <span class="glyphicon glyphicon-thumbs-up"></span>
+                <h4>Sunrise</h4>
+                <p>@t.sunrise</p>
+            </div>
+            <div class="col-sm-3">
+                <span class="glyphicon glyphicon-thumbs-down"></span>
+                <h4>Sunset</h4>
+                <p>@t.sunset</p>
+            </div>
+            
+            <div class="col-sm-3">
+                <span class="glyphicon glyphicon-wrench"></span>
+                <h4>Hours of sun</h4>
+                <p>@t.day_length</p>
+            </div>
           
-            <a href="#" id="tour" class="list-group-item list-group-item-action flex-column align-items-start">
-                <div class="d-flex w-100 justify-content-between">
-                    
-                    <h4 class="mb-1">@t.name</h4>
-                    <small class="text-muted">@t.type</small>
-                </div>
-                <p class="mb-1">@t.comments</p>
-                <small class="text-muted">@t.position.x och @t.position.y % elevation: @t.elevation möh. </small>
-
-
-                @if (t.sunrise == t.sunset)
-                {
-                    <small class="text-muted"> Det är mörkertid, solen går inte upp idag!</small>
-
-                }
-                else
-                {
-                    <small class="text-muted">  Soluppgång: @t.sunrise -- Solnedgång: @t.sunset -- Dagslängd: @t.day_length</small>
-                }
-
-
-
-            </a>
-
-        }
+        </div>
     </div>
+</center>
+}
+<div id="activity" class="container-fluid">
+
+    <h2 class="text-center">ACTIVITY</h2>
 </div>
+
 <div id="weather" class="container-fluid bg-grey">
 
-    <h2 class="text-center">WEATHER & MORE</h2>
+    <h2 class="text-center">WEATHER</h2>
+</div>
+
+<div id="photos" class="container-fluid">
+
+    <h2 class="text-center">PHOTOS</h2>
 </div>
