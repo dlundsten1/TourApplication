@@ -24,7 +24,10 @@ namespace TourApplication.Models
             public string day_length { get; set; }
             public string county { get; set; }
             public string country { get; set; }
-        
+            public string weatherdescription { get; set; }
+            public string weathericon { get; set; }
+            public decimal temperature { get; set; }
+
 
 
 
@@ -39,9 +42,9 @@ namespace TourApplication.Models
         public class Position
         {
           
-            public double x { get; set; }
+            public decimal x { get; set; }
           
-            public double y { get; set; }
+            public decimal y { get; set; }
         }
 
     }

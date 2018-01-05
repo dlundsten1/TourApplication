@@ -7,7 +7,7 @@
 <style>
     .jumbotron {
 
-        background-image: url("@Url.Content("~/content/images/"+@ViewBag.BG)");
+        background-image: url("@Url.Content("~/content/images/" + @ViewBag.BG)");
         background-size: cover;
         height: 450px;
         color: #ffffff;
@@ -21,13 +21,20 @@
     }
 
     .container-fluid {
-        padding: 60px 50px;
+        padding: 20px 50px;
+        min-height: 500px;
     }
+
+    #grey {
+     background-color: black;
+    }
+
 </style>
 
 
 
-<div id="login" class="jumbotron text-center">
+<div id="" class="jumbotron text-center">
+    <div class="alert-danger"> <h1>@ViewBag.message</h1></div>
     <h1>@ViewBag.name</h1>
     <h3>@ViewBag.county, @ViewBag.country </h3>
     <p>@ViewBag.type</p>
@@ -62,103 +69,143 @@
 
     </nav>
 </div>
+
 <center>
-    <div id="googleMap" style="height:400px;width:100%;"></div>
+    <div id="map" class="container-fluid">
+        <div id="googleMap" style="height:400px;width:100%;"></div>
+    </div>
     <script>
         function myMap() {
             var myCenter = new google.maps.LatLng(64.689767, 14.924996);
-            var mapProp = { center: myCenter, zoom: 7, scrollwheel: false, draggable: true, mapTypeId: 'satellite' };
+            var mapProp = { center: myCenter, zoom: 4, scrollwheel: false, draggable: true, mapTypeId: 'satellite' };
             var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
-
-            @foreach (TourApplication.Models.TourModel t in Model) {
+             @if (Model != null)
+             {
+                 foreach (TourApplication.Models.TourModel t in Model) {
             @:var position = new google.maps.LatLng(@t.position.x.ToString().Replace(",", "."), @t.position.y.ToString().Replace(",", "."));
 
 
 
             @:var marker = new google.maps.Marker({ map: map, position: position, clickable: true });
-            @:marker.info = new google.maps.InfoWindow({content: '@t.name'});
+            @:marker.info = new google.maps.InfoWindow({content:'@t.name'});
             @:google.maps.event.addListener(marker, 'click', function () {marker.info.open(map, this);});
 
                      }
-         }
+                 }
+             }
         //https://stackoverflow.com/questions/3158598/google-maps-api-v3-adding-an-infowindow-to-each-marker för att fixa problemet med inforutan
     </script>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDyecsSf2YPWYz-RUw5UGvN_OPEs5J8DpY&callback=myMap"></script>
+
 </center>
-
-@foreach(TourApplication.Models.TourModel t in Model) { 
-<center>
-    <div id="information" class="container-fluid bg-grey">
-
-
-        <h3>Description</h3>
-        <div class="alert alert-info">@t.comments</div>
+@if (Model != null)
+{
+    foreach (TourApplication.Models.TourModel t in Model)
+    {
+        <center>
+            <div id="information" class="container-fluid bg-grey">
 
 
-      
-        <br>
-        <div class="row">
+                <h3>Description</h3>
+                <div class="alert alert-info">@t.comments</div>
 
-         
-            <div class="col-sm-3">
-                <span class="glyphicon glyphicon-off"></span>
-                <h4>Type</h4>
-                <p>@t.type</p>
+
+
+                <br>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <span class="glyphicon glyphicon-off"></span>
+                        <h4>Type</h4>
+                        <p>@t.type</p>
+                    </div>
+
+
+                    <div class="col-sm-3">
+                        <span class="glyphicon glyphicon-heart"></span>
+                        <h4>Difficulty (1-10)</h4>
+                        <p>@t.grade</p>
+                    </div>
+
+
+                    <div class="col-sm-3">
+                        <span class="glyphicon glyphicon-map-marker"></span>
+                        <h4>Position lng/lat</h4>
+                        <p>@t.position.x & @t.position.y</p>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <span class="glyphicon glyphicon-map-marker"></span>
+                        <h4>Vädertest</h4>
+                        <p>@t.temperature & @t.weatherdescription</p>
+                    </div>
+                </div>
+                <br><br>
+
+                <div class="row">
+                    <div class="col-sm-3">
+                        <span class="glyphicon glyphicon-off"></span>
+                        <h4>Elevation</h4>
+                        <p><b>@t.elevation</b> m</p>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <span class="glyphicon glyphicon-thumbs-up"></span>
+                        <h4>Sunrise</h4>
+                        <p>@t.sunrise</p>
+                    </div>
+                    <div class="col-sm-3">
+                        <span class="glyphicon glyphicon-thumbs-down"></span>
+                        <h4>Sunset</h4>
+                        <p>@t.sunset</p>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <span class="glyphicon glyphicon-wrench"></span>
+                        <h4>Hours of sun</h4>
+                        <p>@t.day_length</p>
+                    </div>
+
+                </div>
             </div>
-
-
-            <div class="col-sm-3">
-                <span class="glyphicon glyphicon-heart"></span>
-                <h4>Difficulty (1-10)</h4>
-                <p>@t.grade</p>
-            </div>
-
-      
-            <div class="col-sm-3">
-                <span class="glyphicon glyphicon-map-marker"></span>
-                <h4>Position lng/lat</h4>
-                <p>@t.position.x & @t.position.y</p>
-            </div>
-        </div>
-        <br><br>
-
-        <div class="row">
-            <div class="col-sm-3">
-                <span class="glyphicon glyphicon-off"></span>
-                <h4>Elevation</h4>
-                <p><b>@t.elevation</b> m</p>
-            </div>
-
-            <div class="col-sm-3">
-                <span class="glyphicon glyphicon-thumbs-up"></span>
-                <h4>Sunrise</h4>
-                <p>@t.sunrise</p>
-            </div>
-            <div class="col-sm-3">
-                <span class="glyphicon glyphicon-thumbs-down"></span>
-                <h4>Sunset</h4>
-                <p>@t.sunset</p>
-            </div>
-            
-            <div class="col-sm-3">
-                <span class="glyphicon glyphicon-wrench"></span>
-                <h4>Hours of sun</h4>
-                <p>@t.day_length</p>
-            </div>
-          
-        </div>
-    </div>
-</center>
+        </center>
+    }
 }
 <div id="activity" class="container-fluid">
 
     <h2 class="text-center">ACTIVITY</h2>
 </div>
 
-<div id="weather" class="container-fluid bg-grey">
 
-    <h2 class="text-center">WEATHER</h2>
+<div id="weather" class="container-fluid bg-grey">
+    <center>
+        <h2>Weather forecast for @ViewBag.name</h2>
+        <div class="row">
+            <div class="col-sm-3">
+                <h3> Current temperature </h3>
+                <h1> @ViewBag.temperature °C </h1>
+            </div>
+
+            <div class="col-sm-3">
+                <h3> Current conditions </h3>
+               <h1> @ViewBag.weatherdescription </h1>
+            </div>
+
+            <div class="col-sm-3">
+                <h3>Icon</h3>
+                <img class="img-responsive" src="@ViewBag.icon" alt="">
+            </div>
+
+            <div class="col-sm-3">
+                <h3> Wind </h3>
+            </div>
+
+         
+        </div>
+        <div>
+
+        </div>
+    </center>
 </div>
 
 <div id="photos" class="container-fluid">

@@ -5,6 +5,7 @@
 }
 
 <style>
+
     .jumbotron {
         background-color: #f4511e; /* Orange */
         color: #ffffff;
@@ -16,16 +17,17 @@
     }
 
     .container-fluid {
-        padding: 60px 50px;
+        padding: 10px 50px;
     }
 </style>
 
 <div id="login" class="jumbotron text-center">
-    <h1>Outdoor activity log</h1>
-    <p> <strong>@ViewBag.Count</strong> activities stored in database lagrade i databasen. Will be more!</p>
+    <div class="alert-danger"><h1>@ViewBag.message</h1></div>
+    <h1>Outdoor activity collection</h1>
+    <p> <strong>@ViewBag.Count</strong> activities in 6 categories for you to explore!</p>
     <form class="form-inline">
         <div class="input-group-btn">
-            <input type="email" class="form-control" size="50" placeholder="Email Address" required>
+            <input type="email" class="form-control" size="50" placeholder="Email Address" readonly >
 
             <button type="button" class="btn btn-danger">Subscribe</button>
         </div>
@@ -33,64 +35,29 @@
     </form>
 </div>
 
-
-
-
-<div id="tours" class="container-fluid">
-    <div class="list-group">
-
-        @foreach (TourApplication.Models.TourModel t in Model)
-        {
-
-            <a href="@Url.Action("Details", "Tour", new RouteValueDictionary(new { id = t.name }))" class="list-group-item list-group-item-action flex-column align-items-start">
-                <div class="d-flex w-100 justify-content-between">
-                    <h4 class="mb-1">@t.name</h4>
-                    <small class="text-muted">@t.type</small>
-                </div>
-                <p class="mb-1">@t.comments</p>
-                <small class="text-muted">@t.position.x och @t.position.y % elevation: @t.elevation möh. </small>
-
-
-                @if (t.sunrise == t.sunset)
-                {
-                    <small class="text-muted"> Det är mörkertid, solen går inte upp idag!</small>
-
-                }
-                else
-                {
-                    <small class="text-muted">  Soluppgång: @t.sunrise -- Solnedgång: @t.sunset -- Dagslängd: @t.day_length</small>
-                }
-
-
-
-            </a>
-
-        }
-    </div>
-</div>
-<div id="about" class="container-fluid">
-    <h2>Lagrade turer</h2>
-
-    <p> I dagsläget finns det <strong>@ViewBag.Count</strong> turer lagrade i databasen. Fler ska det bli!</p>
-
+<div id="map" class="container-fluid">
+    <h2>Stored activites:</h2>
+    
     <div id="googleMap" style="height:400px;width:100%;"></div>
     <script>
         function myMap() {
             var myCenter = new google.maps.LatLng(64.689767, 14.924996);
             var mapProp = { center: myCenter, zoom: 4, scrollwheel: false, draggable: true, mapTypeId: 'satellite' };
             var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+            @if (Model != null)
+            {
+                     foreach (TourApplication.Models.TourModel t in Model) {
 
-                     @foreach (TourApplication.Models.TourModel t in Model) {
-
-            @:var position = new google.maps.LatLng(@t.position.x.ToString().Replace(",", "."), @t.position.y.ToString().Replace(",", "."));
+                             @:var position = new google.maps.LatLng(@t.position.x.ToString().Replace(",", "."), @t.position.y.ToString().Replace(",", "."));
 
 
-            @:var marker = new google.maps.Marker({ map: map, position: position, clickable: true });
-            @:marker.info = new google.maps.InfoWindow({content: '@t.name'});
-            @:google.maps.event.addListener(marker, 'click', function () {marker.info.open(map, this);});
+                             @:var marker = new google.maps.Marker({ map: map, position: position, clickable: true });
+                          //   @:marker.info = new google.maps.InfoWindow({ content: '@t.name' });
+                             @:google.maps.event.addListener(marker, 'click', function () { marker.info.open(map, this); });
 
                      }
          }
+        }
         //https://stackoverflow.com/questions/3158598/google-maps-api-v3-adding-an-infowindow-to-each-marker för att fixa problemet med inforutan
     </script>
 
@@ -99,7 +66,33 @@
 
 </div>
 
-<div id="contact" class="container-fluid bg-grey">
+
+
+
+<div id="tours" class="container-fluid bg-grey">
+    <div class="list-group">
+        @if (Model != null)
+        {
+            foreach (TourApplication.Models.TourModel t in Model)
+            {
+
+                <a href="@Url.Action("Details", "Tour", new RouteValueDictionary(new { id = t.name }))" class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h4 class="mb-1">@t.name</h4>
+                        <small class="text-muted">@t.type</small>
+                    </div>
+                    <p class="mb-1">@t.comments</p>
+                  
+
+                </a>
+
+            }
+        }
+    </div>
+</div>
+
+
+<div id="contact" class="container-fluid">
     <h2 class="text-center">CONTACT</h2>
     <div class="row">
         <div class="col-sm-5">

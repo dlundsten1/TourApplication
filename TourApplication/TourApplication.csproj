@@ -173,6 +173,7 @@
     <Compile Include="Models\GeoModel.cs" />
     <Compile Include="Models\SunModel.cs" />
     <Compile Include="Models\TourModel.cs" />
+    <Compile Include="Models\WeatherModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
